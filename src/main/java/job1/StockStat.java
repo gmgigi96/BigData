@@ -1,3 +1,5 @@
+package job1;
+
 import lombok.*;
 import org.apache.hadoop.io.DoubleWritable;
 import org.apache.hadoop.io.WritableComparable;

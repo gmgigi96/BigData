@@ -1,3 +1,5 @@
+package job1;
+
 import lombok.*;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.io.Writable;
