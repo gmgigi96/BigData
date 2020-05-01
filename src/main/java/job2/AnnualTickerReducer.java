@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 public class AnnualTickerReducer extends Reducer<Text, StockValues, Text, Text> {
 
@@ -58,7 +59,7 @@ public class AnnualTickerReducer extends Reducer<Text, StockValues, Text, Text> 
 
         double variation = (priceAtMaxDate - priceAtMinDate) / priceAtMinDate * 100;
 
-        String output_string = String.format("%f\t%f\t%f\t%d",
+        String output_string = String.format(Locale.US, "%.2f\t%.2f\t%.2f\t%d",
                 variation, annualVolume, sum, count
         );
 

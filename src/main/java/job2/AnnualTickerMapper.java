@@ -54,7 +54,7 @@ public class AnnualTickerMapper extends Mapper<Object, Text, Text, StockValues> 
 
                 String ticker = values[TICKER];
 
-                this.ticker_year.set(ticker + "," + year);
+                this.ticker_year.set(ticker + "-" + year);
                 this.close_price.set(close_price);
                 this.volume.set(volume);
                 this.date.set(date);
