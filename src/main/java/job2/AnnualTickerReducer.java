@@ -63,6 +63,8 @@ public class AnnualTickerReducer extends Reducer<Text, StockValues, Text, Text> 
                 variation, annualVolume, sum, count
         );
 
+        // ticker-year variation annualVolume sum count
+
         this.output.set(output_string);
         context.write(key, this.output);
     }
