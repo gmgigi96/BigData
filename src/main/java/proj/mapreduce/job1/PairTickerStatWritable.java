@@ -1,4 +1,4 @@
-package job1;
+package proj.mapreduce.job1;
 
 import lombok.*;
 import org.apache.hadoop.io.Text;

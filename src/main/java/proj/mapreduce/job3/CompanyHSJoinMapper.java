@@ -1,6 +1,6 @@
-package job3;
+package proj.mapreduce.job3;
 
-import job2.TagDataWritable;
+import proj.mapreduce.job2.TagDataWritable;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.hadoop.io.Text;

@@ -1,14 +1,12 @@
-package job2;
+package proj.mapreduce.job2;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
-import org.apache.commons.csv.CSVRecord;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
 
 import java.io.IOException;
 import java.io.StringReader;
-import java.util.Arrays;
 import java.util.stream.StreamSupport;
 
 public class JoinHSMapper extends Mapper<Object, Text, Text, TagDataWritable> {

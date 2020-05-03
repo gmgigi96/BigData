@@ -1,4 +1,4 @@
-package job3;
+package proj.mapreduce.job3;
 
 import lombok.*;
 import org.apache.hadoop.io.DoubleWritable;

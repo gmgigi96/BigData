@@ -1,4 +1,4 @@
-package job1;
+package proj.mapreduce.job1;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
@@ -15,7 +15,7 @@ public class DailyHistoricalStockPrices {
     public static void main(String[] args) throws IOException, ClassNotFoundException, InterruptedException {
 
         Job job1 = Job.getInstance(new Configuration());
-        job1.setJobName("job1.DailyHistoricalStockPrices");
+        job1.setJobName("DailyHistoricalStockPrices");
 
         FileInputFormat.addInputPath(job1, new Path(args[0]));
         FileOutputFormat.setOutputPath(job1, new Path(args[1]));
@@ -36,7 +36,7 @@ public class DailyHistoricalStockPrices {
 
 
         Job job2 = Job.getInstance(new Configuration());
-        job2.setJobName("job1.DailyHistoricalStockPrices");
+        job2.setJobName("DailyHistoricalStockPrices");
 
         FileInputFormat.addInputPath(job2, new Path(args[1]));
         FileOutputFormat.setOutputPath(job2, new Path(args[2]));

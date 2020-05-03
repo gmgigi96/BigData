@@ -1,5 +1,6 @@
-package job2;
+package proj.mapreduce.job3;
 
+import proj.mapreduce.job2.TagDataWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Reducer;
 
@@ -7,7 +8,7 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
-public class JoinReducer extends Reducer<Text, TagDataWritable, Text, Text> {
+public class CompanyJoinReducer extends Reducer<Text, TagDataWritable, Text, Text> {
 
     private final List<Text> list1 = new LinkedList<>();
     private final List<Text> list2 = new LinkedList<>();
@@ -28,12 +29,12 @@ public class JoinReducer extends Reducer<Text, TagDataWritable, Text, Text> {
             }
         }
 
-        // join between two dataset
         for (Text data : list1) {
-            for (Text sector : list2) {
-                context.write(sector, data);
+            for (Text company : list2) {
+                context.write(company, data);
             }
         }
 
     }
+
 }

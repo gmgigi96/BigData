@@ -1,4 +1,4 @@
-package job2;
+package proj.mapreduce.job2;
 
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Reducer;

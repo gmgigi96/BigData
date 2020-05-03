@@ -1,6 +1,6 @@
-package job2;
+package proj.mapreduce.job2;
 
-import job1.StockValues;
+import proj.mapreduce.job1.StockValues;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.Text;

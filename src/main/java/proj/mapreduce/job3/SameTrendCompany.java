@@ -1,8 +1,8 @@
-package job3;
+package proj.mapreduce.job3;
 
 
-import job2.SectorTrend;
-import job2.TagDataWritable;
+import proj.mapreduce.job2.SectorTrend;
+import proj.mapreduce.job2.TagDataWritable;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.Text;

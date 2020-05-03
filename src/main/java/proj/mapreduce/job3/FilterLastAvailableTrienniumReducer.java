@@ -1,4 +1,4 @@
-package job3;
+package proj.mapreduce.job3;
 
 import com.google.common.collect.Lists;
 import org.apache.hadoop.io.Text;
