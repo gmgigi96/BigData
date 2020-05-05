@@ -23,7 +23,7 @@ import java.util.Map;
 class Line implements Serializable {
     private String ticker;
     private double closePrice;
-    private int volume;
+    private long volume;
     private Date date;
 }
 
@@ -83,7 +83,7 @@ public class StockStats {
 
     }
 
-    private static void saveFile(JavaPairRDD<String, Stat> rdd, String path) {
+    public static void saveFile(JavaPairRDD<String, Stat> rdd, String path) {
         JavaRDD<String> out = rdd.map(t -> String.format(Locale.US,
                 "%s,%.2f,%.2f,%.2f,%.2f",
                 t._1, t._2.getMin(), t._2.getMax(), t._2.getMean_volume(), t._2.getVariation()));
@@ -156,7 +156,7 @@ public class StockStats {
     }
 
 
-    private static Dataset<Row> loadCsv(SparkSession spark, String path_hsp) {
+    public static Dataset<Row> loadCsv(SparkSession spark, String path_hsp) {
         Map<String, String> options = new HashMap<>();
         options.put("header", "true");
         options.put("inferSchema", "true");
