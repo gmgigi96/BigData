@@ -64,6 +64,7 @@ public class SectorTrend {
                 .filter(d -> d.getDate().compareTo(MIN_DATE) >= 0 && d.getDate().compareTo(MAX_DATE) <= 0).cache();
 
         JavaPairRDD<String, Tuple4<Integer, Double, Double, Double>> f = filtered_hsp
+                // (TICKER, YEAR) -> (VOLUME, PRICE, PRICE, DATE, DATE, PRICE, 1)
                 .mapToPair(data -> new Tuple2<>(
                         new Tuple2<>(data.getTicker(), data.getDate().getYear() + 1900), // TODO: change Date with Calendar
                         new StatTrend(data.getVolume(),
@@ -74,6 +75,7 @@ public class SectorTrend {
                                 data.getClosePrice(),
                                 1))
                 )
+                // SUM VOLUME, get price at min and max date, sum count, sum price for quotation
                 .reduceByKey((t1, t2) -> {
                     double volume = t1.getSumVolume() + t2.getSumVolume();
                     double max_quotation, min_quotation;
@@ -101,16 +103,19 @@ public class SectorTrend {
                     long count = t1.getCount() + t2.getCount();
                     return new StatTrend(volume, max_quotation, min_quotation, max_date, min_date, sum_quotation, count);
                 })
+                // azione -> (anno, volume annuale, variazione annuale=(maxDatePrice-minDatePrice)/minDatePrice*100, quotazione giornaliera=media quotazioni)
                 .mapToPair(t -> new Tuple2<>(
                         t._1._1,
                         new Tuple4<>(t._1._2,
                                 t._2.getSumVolume(),
                                 (t._2.getMaxQuotation() - t._2.getMinQuotation()) / t._2.getMinQuotation() * 100,
                                 t._2.getSumQuotation() / t._2.getCount())
-                        // (anno, volume annuale, variazione annuale, quotazione giornaliera)
                 ));
 
-        JavaPairRDD<Tuple2<String, Integer>, Tuple3<Double, Double, Double>> join = f.join(hs)
+        JavaPairRDD<Tuple2<String, Integer>, Tuple3<Double, Double, Double>> join = f
+                // join con hs per settore
+                .join(hs)
+                // (sector, year) -> (volume, variazione annuale, variazione giornaliera, 1)
                 .mapToPair(l -> new Tuple2<>(
                         new Tuple2<>(l._2._2, l._2._1._1()),
                         new Tuple4<>(l._2._1._2(), l._2._1._3(), l._2._1._4(), 1)))
@@ -119,6 +124,7 @@ public class SectorTrend {
                         v1._2() + v2._2(),      // SOMMA VARIAZIONE ANNUALE
                         v1._3() + v2._3(),      // SOMMA QUOTAZIONE GIORNALIERA
                         v1._4() + v2._4()))     // CONTEGGIO
+                // (sector, year) -> (volume medio, variazione annuale media, variazione giornaliera media)
                 .mapToPair(t -> new Tuple2<>(
                         t._1,
                         new Tuple3<>(t._2._1() / t._2._4(), t._2._2() / t._2._4(), t._2._3() / t._2._4())
