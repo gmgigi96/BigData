@@ -102,6 +102,8 @@ hs_err_pid*
 ### Gradle ###
 .gradle
 build/
+gradlew
+*.bat
 
 # Ignore Gradle GUI config
 gradle-app.setting
@@ -149,3 +151,12 @@ HELP.md
 .vscode/
 /gradlew
 /gradlew.bat
+
+
+
+### HIVE ###
+
+metastore_db/
+*.jar
+*.properties
+*.MF
