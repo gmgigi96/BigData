@@ -139,7 +139,7 @@ public class SectorTrend {
         JavaRDD<String> out = rdd.map(t -> String.format(Locale.US,
                 "%s,%d,%.2f,%.2f,%.2f",
                 t._1._1, t._1._2, t._2._1(), t._2._2(), t._2._3()));
-        out.coalesce(1).saveAsTextFile(path);
+        out.saveAsTextFile(path);
     }
 
 }

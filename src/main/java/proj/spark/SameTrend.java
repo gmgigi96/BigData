@@ -133,7 +133,7 @@ public class SameTrend {
 
             return String.format("{%s}:%d:%d,%d:%d,%d:%d", company_string, trend._1(), trend._2(),
                     trend._3(), trend._4(), trend._5(), trend._6());
-        }).coalesce(1);
+        });
         save.saveAsTextFile(path);
     }
 

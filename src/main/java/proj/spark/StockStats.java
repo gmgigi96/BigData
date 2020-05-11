@@ -87,7 +87,7 @@ public class StockStats {
         JavaRDD<String> out = rdd.map(t -> String.format(Locale.US,
                 "%s,%.2f,%.2f,%.2f,%.2f",
                 t._1, t._2.getMin(), t._2.getMax(), t._2.getMean_volume(), t._2.getVariation()));
-        out.coalesce(1).saveAsTextFile(path);
+        out.saveAsTextFile(path);
     }
 
     private static JavaPairRDD<String, Stat> join(JavaPairRDD<String, Double> min, JavaPairRDD<String, Double> max, JavaPairRDD<String, Double> mean_volume, JavaPairRDD<String, Double> variation) {
