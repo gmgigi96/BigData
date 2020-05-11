@@ -62,7 +62,7 @@ public class StockStats {
         JavaRDD<Row> hsp = loadCsv(spark, path_hsp).javaRDD();
 
         JavaRDD<Line> filtered_data = hsp.map(row -> new Line(row.getString(TICKER), row.getDouble(CLOSE),
-                row.getInt(VOLUME), toDate(row.getString(DATE))))
+                row.getLong(VOLUME), toDate(row.getTimestamp(DATE).toString())))
                 .filter(d -> d.getDate().compareTo(MIN_DATE) >= 0 && d.getDate().compareTo(MAX_DATE) <= 0).cache();
 
         JavaPairRDD<String, Double> ticker_price = filtered_data.mapToPair(d -> new Tuple2<>(d.getTicker(), d.getClosePrice())).cache();
@@ -83,11 +83,11 @@ public class StockStats {
 
     }
 
-    public static void saveFile(JavaPairRDD<String, Stat> rdd, String path) {
+    private static void saveFile(JavaPairRDD<String, Stat> rdd, String path) {
         JavaRDD<String> out = rdd.map(t -> String.format(Locale.US,
                 "%s,%.2f,%.2f,%.2f,%.2f",
                 t._1, t._2.getMin(), t._2.getMax(), t._2.getMean_volume(), t._2.getVariation()));
-        out.saveAsTextFile(path);
+        out.coalesce(1).saveAsTextFile(path);
     }
 
     private static JavaPairRDD<String, Stat> join(JavaPairRDD<String, Double> min, JavaPairRDD<String, Double> max, JavaPairRDD<String, Double> mean_volume, JavaPairRDD<String, Double> variation) {

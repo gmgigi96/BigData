@@ -60,7 +60,7 @@ public class SectorTrend {
                 .mapToPair(row -> new Tuple2<>(row.getString(TICKER), row.getString(SECTOR)));
 
         JavaRDD<Line> filtered_hsp = hsp.map(row -> new Line(row.getString(TICKER), row.getDouble(CLOSE),
-                row.getLong(VOLUME), toDate(row.getString(DATE))))
+                row.get(VOLUME) instanceof Integer ? row.getInt(VOLUME) : row.getLong(VOLUME), toDate(row.getTimestamp(DATE).toString())))
                 .filter(d -> d.getDate().compareTo(MIN_DATE) >= 0 && d.getDate().compareTo(MAX_DATE) <= 0).cache();
 
         JavaPairRDD<String, Tuple4<Integer, Double, Double, Double>> f = filtered_hsp
@@ -139,7 +139,7 @@ public class SectorTrend {
         JavaRDD<String> out = rdd.map(t -> String.format(Locale.US,
                 "%s,%d,%.2f,%.2f,%.2f",
                 t._1._1, t._1._2, t._2._1(), t._2._2(), t._2._3()));
-        out.saveAsTextFile(path);
+        out.coalesce(1).saveAsTextFile(path);
     }
 
 }
