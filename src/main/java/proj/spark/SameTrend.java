@@ -47,12 +47,12 @@ public class SameTrend {
         JavaPairRDD<Tuple6<Integer, Integer, Integer, Integer, Integer, Integer>, Iterable<String>> sameTrend = hsp
                 // (TICKER, YEAR) -> (CLOSE_MAX_DATE = CLOSE, MAX_DATE=DATE, CLOSE_MIN_DATE=CLOSE, MIN_DATE=DATE)
                 .mapToPair(row -> new Tuple2<>(
-                        new Tuple2<>(row.getString(TICKER), toDate(row.getTimestamp(DATE).toString()).getYear() + 1900),
+                        new Tuple2<>(row.getString(TICKER), toDate(row.getString(DATE)).getYear() + 1900),
                         new Tuple4<>(
-                                row.getDouble(CLOSE),
-                                toDate(row.getTimestamp(DATE).toString()),
-                                row.getDouble(CLOSE),
-                                toDate(row.getTimestamp(DATE).toString())
+                                Double.parseDouble(row.getString(CLOSE)),
+                                toDate(row.getString(DATE)),
+                                Double.parseDouble(row.getString(CLOSE)),
+                                toDate(row.getString(DATE))
                         )))
                 // calculate close at max date and close at min date
                 .reduceByKey((t1, t2) -> {
