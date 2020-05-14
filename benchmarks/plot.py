@@ -29,8 +29,8 @@ def plot_job(job):
     rect_spark = ax.bar(x, spark, width, label='Spark')
     rect_hive = ax.bar(x + width, hive, width, label='Hive')
 
-    ax.set_ylabel('Seconds')
-    ax.set_xlabel('Rows')
+    ax.set_ylabel('Time(s)')
+    ax.set_xlabel('Rows processed')
     ax.set_title(f'Benchmarks for {job}')
     ax.set_xticks(x)
     ax.set_xticklabels(keys)
