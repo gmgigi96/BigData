@@ -14,7 +14,7 @@ CREATE EXTERNAL TABLE IF NOT EXISTS prices
 ROW FORMAT DELIMITED
 FIELDS TERMINATED BY ','
 STORED AS TEXTFILE
-LOCATION 'hdfs://localhost:9000/user/gianmaria/input/in1000/';
+LOCATION '${hiveconf:input1}';
 
 
 CREATE EXTERNAL TABLE IF NOT EXISTS stocks
@@ -22,9 +22,9 @@ CREATE EXTERNAL TABLE IF NOT EXISTS stocks
 ROW FORMAT SERDE 'org.apache.hadoop.hive.serde2.OpenCSVSerde'
 WITH SERDEPROPERTIES ("separatorChar" = ",", "quoteChar" = "\"", "escapeChar" = "\\")
 STORED AS TEXTFILE
-LOCATION 'hdfs://localhost:9000/user/gianmaria/input/stocks';
+LOCATION '${hiveconf:input2}';
 
-add jar /home/gianmaria/Documenti/Proj/BigData/hive/UDFUtils/out/artifacts/LastThreeYearsUDF/LastThreeYearsUDF.jar;
+add jar hive/UDFUtils/out/artifacts/LastThreeYearsUDF/LastThreeYearsUDF.jar;
 create temporary function last_three_years as 'proj.hive.job3.LastThreeYearsUDF';
 
 CREATE TABLE filtered_prices AS
