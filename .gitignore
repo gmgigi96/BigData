@@ -33,7 +33,7 @@ cmake-build-*/
 *.iws
 
 # IntelliJ
-out/
+# out/
 
 # mpeltonen/sbt-idea plugin
 .idea_modules/
@@ -88,7 +88,7 @@ fabric.properties
 .mtj.tmp/
 
 # Package Files #
-*.jar
+#*.jar
 *.war
 *.nar
 *.ear
@@ -157,6 +157,6 @@ HELP.md
 ### HIVE ###
 
 metastore_db/
-*.jar
+#*.jar
 *.properties
 *.MF
