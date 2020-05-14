@@ -88,14 +88,13 @@ public class StockStats {
                     String.format(Locale.US, "%s,%.2f,%.2f,%.2f,%.2f",
                             v._1, v._2._1(), v._2._2(), v._2._3() / v._2._4(), variation)
             );
-        }).map(t -> t._2);
+        }).sortByKey(false).map(t -> t._2);
 
         ordered_by_variation.saveAsTextFile(path_out);
 
         spark.close();
 
     }
-
 
     public static Dataset<Row> loadCsv(SparkSession spark, String path_hsp) {
         Map<String, String> options = new HashMap<>();

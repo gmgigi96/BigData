@@ -47,6 +47,7 @@ public class SectorTrend {
 
         Job job1 = Job.getInstance(new Configuration());
         job1.setJobName("Join");
+        job1.setJarByClass(SectorTrend.class);
 
         MultipleInputs.addInputPath(job1, temp1, TextInputFormat.class, JoinHSPMapper.class);
         MultipleInputs.addInputPath(job1, dataset2, TextInputFormat.class, JoinHSMapper.class);

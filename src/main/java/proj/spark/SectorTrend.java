@@ -15,18 +15,6 @@ import java.util.Locale;
 import static proj.spark.StockStats.loadCsv;
 import static proj.spark.StockStats.toDate;
 
-@Data
-@AllArgsConstructor
-class StatTrend implements Serializable {
-    private double sumVolume;
-    private double maxQuotation;
-    private double minQuotation;
-    private Date maxDate;
-    private Date minDate;
-    private double sumQuotation;
-    private long count;
-}
-
 
 public class SectorTrend {
 

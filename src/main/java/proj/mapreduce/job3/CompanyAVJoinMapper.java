@@ -1,10 +1,11 @@
 package proj.mapreduce.job3;
 
-import proj.mapreduce.job2.TagDataWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
+import proj.mapreduce.job2.TagDataWritable;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 public class CompanyAVJoinMapper extends Mapper<Object, Text, Text, TagDataWritable> {
 
@@ -21,11 +22,18 @@ public class CompanyAVJoinMapper extends Mapper<Object, Text, Text, TagDataWrita
         String[] line = value.toString().split("\t");
         String[] ticker_year = line[TICKER].split("-");
 
-        ticker.set(ticker_year[TICKER]);
-        data.set(ticker_year[YEAR] + "\t" + line[VARIATION]);
-        tagData.set(tag, data);
+        try {
+            ticker.set(ticker_year[TICKER]);
+            data.set(ticker_year[YEAR] + "\t" + line[VARIATION]);
+            tagData.set(tag, data);
 
-        context.write(ticker, tagData);
+            context.write(ticker, tagData);
+        } catch (Exception e) {
+            System.out.println("\nERRORE -> " + Arrays.toString(line));
+            System.out.println("ERRORE -> " + Arrays.toString(ticker_year));
+            System.out.println();
+        }
+
     }
 
 }
