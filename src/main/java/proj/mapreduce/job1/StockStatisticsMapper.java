@@ -20,22 +20,32 @@ public class StockStatisticsMapper extends Mapper<Object, Text, Text, StockValue
     private Text date = new Text();
     private Text ticker = new Text();
 
+    private static final int MIN_YEAR = 2008;
+    private static final int MAX_YEAR = 2018;
+
     @Override
     protected void map(Object key, Text value, Context context) throws IOException, InterruptedException {
         String[] line = value.toString().split(",");
         ticker.set(line[TICKER]);
 
         try {
-            double close = Double.parseDouble(line[CLOSE]);
-            int volume = Integer.parseInt(line[VOLUME]);
+            String date = line[DATE];
+            int year = Integer.parseInt(date.substring(0, 4));
 
-            this.date.set(line[DATE]);
-            this.closePrice.set(close);
-            this.volume.set(volume);
+            // filter by year
+            if (year >= MIN_YEAR && year <= MAX_YEAR) {
+                double close = Double.parseDouble(line[CLOSE]);
+                int volume = Integer.parseInt(line[VOLUME]);
 
-            stockValues.set(this.closePrice, this.volume, this.date);
+                this.date.set(date);
+                this.closePrice.set(close);
+                this.volume.set(volume);
 
-            context.write(ticker, stockValues);
+                stockValues.set(this.closePrice, this.volume, this.date);
+
+                context.write(ticker, stockValues);
+            }
+
         } catch (Exception ignored) {
 
         }

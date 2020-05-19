@@ -45,8 +45,6 @@ public class SameTrendCompany {
 
         // company, year, variation
 
-        // TODO: calcolare media azioni stessa azienda
-
         Job job2 = Job.getInstance(new Configuration());
         job2.setJobName("Last Three Year trends");
 

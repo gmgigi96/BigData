@@ -83,7 +83,7 @@ public class SectorTrend {
 
                     double sum_quotation = t1._6() + t2._6();
                     long count = t1._7() + t2._7();
-                    return new Tuple7<>(volume, max_quotation, min_quotation, max_date, min_date, sum_quotation, count);
+                    return new Tuple7<>(volume, min_quotation, max_quotation, min_date, max_date, sum_quotation, count);
                 })
                 // azione -> (anno, volume annuale, variazione annuale=(maxDatePrice-minDatePrice)/minDatePrice*100, quotazione giornaliera=media quotazioni)
                 .mapToPair(t -> new Tuple2<>(
