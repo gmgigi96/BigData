@@ -1,0 +1,159 @@
+In the following pseudocodes hsp and hs are historial_stock_prices.csv and historical_stocks.csv files, respectively.
+
+
+# MAP REDUCE
+
+### job1
+
+Map(_, line):
+    line_splitted = split(line, ",")
+    select ticker, close_price, volume date from line_splitted
+    
+    emit(ticker, (close_price, volume, date)) if 2008 <= year <= 2018
+
+Reduce(ticker, tuples):
+
+    select min_price from tuples list
+    select max_price from tuples list
+    compute mean_volume # sum volumes in tuples / len(tuples)
+    select price_at_min_date, i.e. the price at the min date in the interval considered in tuples list 
+    select price_at_max_date, i.e. the price at the max date in the interval considered in tuples list
+
+    variation = (price_at_max_date - price_at_min_date) / price_at_min_date * 100
+
+    emit(ticker, (variation, min_price, max_price, mean_volume))
+
+
+Map(ticker, stat):
+    select variation, min_price, max_price, mean_volume from stat
+
+    # InverseDouble is a type that wraps a double, in which is defined the follow comparator:
+    #   compare(i1, i2):
+    #        return compare(i2, i1)
+
+    emit((InverseDouble) variation, (ticker, variation, min_price, max_price, mean_volume))
+
+Reduce(variation, stats):
+    for (ticker, variation, min_price, max_price, mean_volume) in stats:
+        emit(ticker, (variation, min_price, max_price, mean_volume))
+
+    
+### job2
+
+Map(_, line):
+    line_splitted = split(line, ",")
+
+    if 2008 <= year <= 2018:
+        select ticker, volume, close_price, date
+
+        emit((ticker, year), (close_price, volume, date))
+
+Reduce(ticker_year, stats):
+
+
+    compute annual_volume # sum volumes in stats
+    select price_at_min_date, i.e. the price at the min date in the interval considered in stats list 
+    select price_at_max_date, i.e. the price at the max date in the interval considered in stats list
+    compute sum_prices # sum prices in stats list
+
+    variation = (price_at_max_date - price_at_min_date) / price_at_min_date * 100
+
+    emit(ticker_year, (variation, annual_volume, sum_prices, len(stats) as count))
+
+
+Map-Reduce join job on hsp.ticker = hs.ticker
+    obtaining sector => (ticker, year, variation, annual_volume, sum_price, count) list
+
+
+Map(_, line):
+    select ticker, year, volume, variation, sum_price, count from line
+
+    emit((ticker, year), (variation, volume, sum_price, count))
+
+Reduce(ticker_year, stats):
+
+    for (variation, volume, sum_price, count) in stats:
+        c++;
+        sum_volume += volume
+        sum_variation += variation
+        sum_sum_price += sum_price
+        counts += count
+    
+    mean_volume = sum_volume / c
+    mean_variation = sum_variation / c
+    mean_prices = sum_sum_price / counts
+
+    emit(ticker_year, (mean_volume, mean_variation, mean_prices))
+
+
+### job 3
+
+Map-Reduce join job on ticker value, with the following inputs:
+    - hs
+    - result of first reduce task of job2, selecting only ticker, year, variation
+obtaining company => (year, variation)
+
+
+Map(_, line):
+    select company, year, variation from line
+
+    emit(company, (year, variation))
+
+Reduce(company, tuples):
+    trend = get_last_three_continuous_years(tuples)
+
+    if (last_three_years)
+        emit(company, trend)
+
+
+Map(company, last_three_years):
+    emit(trend, company)
+
+Reduce(trend, companies):
+    emit(companies, trend)
+
+
+# Spark
+
+### job1
+
+    hsp.map(line -> (ticker, (close_price, close_price, volume, 1, date, close_price, date, close_price)))
+        .filter(t -> 2008 <= date <= 2018)
+        .reduceByKey(t1, t2 ->
+            (min(t1[0], t2[0]), max(t1[2], t2[2]), t1[3] + t2[3], t1[4] + t2[4], min(t1[5], t2[5]), price_min_date, max(t1[7], t2[7]), price_max_date)
+        )
+        .map(k, v -> ((v[7] - v[5])/v[5] * 100 as variation, 
+            (k, v[0], v[1], v[2], v[3], variation))
+        )
+        .sortByKey(false)
+        .map(k, v -> v)
+
+
+### job2
+
+    hs_mapped = hs.map(l -> ticker, sector)
+
+    hsp.map(l -> (ticker, year), volume, close_price, close_price, date, date, close_price, 1)
+        .fiter(2008 <= year 2018)
+        .reduceByKey(t1, t2 ->
+            (t1[0] + t2[0], close_price_min_date, close_price_max_date, min(t1[3], t2[3]),
+            max(t1[4], t2[4], t1[5] + t2[5], t1[6] + t2[6])
+            )
+        )
+        .map(t -> ticker, (year, volume, variation, mean_price))
+        .join(hs_mapped)
+        .reduceByKey(t1, t2 -> t1[0]+t2[0],
+                    t1[1]+t2[1], t1[2]+t2[2], t1[3]+t2[3])
+        
+
+### job3
+
+    hsp.map(l -> (ticker, year), (close, date, close, date))
+        .reduceByKey(t1, t2 -> (price_max_date, max(t1[1], t2[1]), price_min_date, min(t1[3], t2[3])))
+        .map((ticker, year), prices -> ticker, (year, variation))
+        .join(hs)
+        .map(k, v -> company, (year, variation))
+        .groupByKey()
+        .map(company, list[(year, variation)] -> company, laste_three_years(list))
+        .map(company, last_three_years -> last_three_years, company)
+        .groupByKey()
